@@ -4,7 +4,8 @@ class Constants {
 
     companion object {
 
-        const val BASE_URL = "https://api.example.com"
+        const val BASE_URL = "http://103.25.130.112:8080/"
+        const val IMG_BASE_URL = "http://103.25.130.112:8080"
         const val API_KEY = "[YOUR API KEY HERE]"
 
         // API Query Keys
@@ -13,7 +14,7 @@ class Constants {
         const val QUERY_API_KEY = "apiKey"
         const val QUERY_TYPE = "type"
 
-
+        const val SMS_CONSENT_REQUEST = 1462
     }
 
 }

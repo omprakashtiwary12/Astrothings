@@ -1,17 +1,27 @@
+import com.android.tools.r8.dex.x
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.dagger.hilt)
-    alias(libs.plugins.google.services)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.jetbrains.kotlin.compose)
     alias(libs.plugins.realm)
+    id("kotlin-parcelize")
 }
 
 android {
     namespace = "com.op.astrothings"
     compileSdk = 35
-
+    android.buildFeatures.buildConfig = true
+    buildTypes {
+        debug {
+            buildConfigField("boolean", "DEBUG", "true")
+        }
+        release {
+            buildConfigField("boolean", "DEBUG", "false")
+        }
+    }
     defaultConfig {
         applicationId = "com.op.astrothings"
         minSdk = 24
@@ -27,7 +37,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -63,8 +74,12 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.firebase.auth)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.firebase.crashlytics)
+    implementation (libs.play.services.auth)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.generativeai)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -74,10 +89,7 @@ dependencies {
 
     // Compose Navigation
     implementation(libs.androidx.navigation.compose)
-
-    // Firebase
-    implementation(libs.firebase.auth.ktx)
-    implementation(libs.firebase.storage.ktx)
+   // implementation (libs.google_play_services_auth)
 
     // Room components
     implementation(libs.androidx.room.runtime)
@@ -107,15 +119,10 @@ dependencies {
 
     // CALENDAR
     implementation(libs.calendar)
-
     // CLOCK
     implementation(libs.clock)
 
-    // Message Bar Compose
-    implementation(libs.messagebarcompose)
-
-    // One-Tap Compose
-    implementation(libs.onetapcompose)
+    implementation(libs.systemUiController)
 
     // Desugar JDK
     coreLibraryDesugaring(libs.desugar.jdk.libs)
@@ -124,6 +131,18 @@ dependencies {
     implementation(libs.gson)
     // Gson Converter
     implementation(libs.retrofit.gson.converter)
+    implementation(libs.timber)
+    implementation (libs.retrofit)
+    implementation(libs.scalarConverter)
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    implementation (libs.converter.moshi)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.data.store.pref)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.play.services.auth)
+    implementation(libs.play.services.auth.api.phone)
+    implementation(libs.kotlin.stdlib)
 
 
 }

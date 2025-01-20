@@ -19,3 +19,19 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Retrofit rules
+-keep class retrofit2.** { *; }
+-keepclassmembers class * {
+    @retrofit2.http.* <methods>;
+}
+-keepattributes Signature
+
+# Gson rules (if used)
+-keep class com.squareup.moshi.Json.** { *; }
+-keepclassmembers class * {
+    @com.squareup.moshi.JsonClass <fields>;
+}
+
+# Keep model classes
+-keep class com.op.astrothings.com.astrothings.data.model.requestJSON.** { *; }

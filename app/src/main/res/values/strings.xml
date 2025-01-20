@@ -1,10 +1,14 @@
 <resources>
-    <string name="app_name">Astrothings</string>
+    <string name="app_name">AstroView</string>
     <string name="login_to_your_account">Login to your account</string>
     <string name="phone_number">Phone Number</string>
-    <string name="enter_your_registered_phone_number">Enter your registered phone number</string>
+    <string name="enter_your_registered_phone_number">Enter your phone number</string>
     <string name="phone_icon">Phone Icon</string>
     <string name="login">Login</string>
     <string name="welcome_back">Welcome Back</string>
     <string name="app_logo">App Logo</string>
+    <string name="otp_verification">Otp Verification</string>
+    <string name="sms_timeout_error">Your SMS has timed out. Please try again.</string>
+    <string name="activity_not_found_error">Unable to start the consent dialog. Please try again.</string>
+    <string name="sms_retriever_error_consent_denied">SMS retrieval consent was denied. Please try again.</string>
 </resources>
