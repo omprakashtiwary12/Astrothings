@@ -150,7 +150,8 @@ fun OtpScreen(
                 value = otpCode.value,
                 length = 4,
                 onValueChange = { otpCode.value = it },
-                onVerificationExplicitlyTriggered = {}
+                onVerificationExplicitlyTriggered = {},
+                isPasswordVisible = false
             )
 
             Spacer(modifier = Modifier.height(16.dp))

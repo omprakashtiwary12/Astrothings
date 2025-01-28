@@ -44,10 +44,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -55,6 +59,8 @@ import com.op.astrothings.R
 import com.op.astrothings.com.astrothings.data.model.requestJSON.RequestOTPJson
 import com.op.astrothings.com.astrothings.navigation.Screen
 import com.op.astrothings.com.astrothings.viewmodels.LoginViewModel
+import com.op.astrothings.ui.theme.BlueGray
+import com.op.astrothings.ui.theme.screenBackend
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 
@@ -112,10 +118,17 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel) {
     }
 
     DimmingProgressBarOverlay(showProgressBar = isLoading.value) {
+        val uiColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+
         Surface(modifier = Modifier.fillMaxSize()) {
-            TopSection()
-            Spacer(modifier = Modifier.height(24.dp))
-            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TopSection()
+                Spacer(modifier = Modifier.height(24.dp))
+
                 OutlinedTextField(
                     value = phoneNumber.value,
                     onValueChange = { input ->
@@ -133,39 +146,49 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel) {
                     label = {
                         Text(
                             stringResource(R.string.phone_number),
-                            color = Color.White,
+                            color = uiColor,
                             style = MaterialTheme.typography.bodyLarge
                         )
                     },
                     placeholder = {
                         Text(
                             stringResource(R.string.enter_your_registered_phone_number),
-                            color = Color.White,
+                            color = if (isSystemInDarkTheme()) uiColor else Color.White,
                             style = MaterialTheme.typography.bodyLarge
                         )
                     },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Phone,
                             contentDescription = stringResource(R.string.phone_icon),
-                            tint = Color.White
+                            tint = if (isSystemInDarkTheme()) uiColor else Color.White
                         )
                     },
+                    textStyle = TextStyle(
+                        fontSize = 20.sp, // Set the desired font size here
+                        letterSpacing = 2.sp, // Add letter spacing here
+                        color = if (isSystemInDarkTheme()) uiColor else Color.White
+                    ),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.White,
-                        unfocusedBorderColor = Color.White,
-                        cursorColor = Color.White,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent
+                        focusedBorderColor = if (isSystemInDarkTheme()) Color.White else screenBackend,
+                        unfocusedBorderColor = if (isSystemInDarkTheme()) Color.White else screenBackend,
+                        cursorColor = if (isSystemInDarkTheme()) uiColor else Color.White,
+                        focusedTextColor = if (isSystemInDarkTheme()) uiColor else Color.White,
+                        unfocusedTextColor = if (isSystemInDarkTheme()) uiColor else Color.White,
+                        focusedContainerColor = if (isSystemInDarkTheme()) BlueGray else screenBackend,
+                        unfocusedContainerColor = if (isSystemInDarkTheme()) BlueGray else screenBackend
                     )
                 )
 
+                Spacer(modifier = Modifier.height(12.dp))
+
                 val isChecked = remember { mutableStateOf(false) }
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -175,22 +198,26 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel) {
                         checked = isChecked.value,
                         onCheckedChange = { isChecked.value = it },
                         colors = CheckboxDefaults.colors(
-                            checkedColor = Color.White,
-                            uncheckedColor = Color.White
+                            checkedColor = uiColor,
+                            uncheckedColor = uiColor
                         )
                     )
                     val annotatedString = buildAnnotatedString {
-                        append("I have read ")
-                        withStyle(style = SpanStyle(color = Color.White),) {
+                        val prefixColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        val linkColor = screenBackend // Assuming `screenBackend` is used for link text color.
+
+                        withStyle(style = SpanStyle(color = prefixColor)) {
+                            append("I have read ")
+                        }
+                        withStyle(style = SpanStyle(color = linkColor)) {
                             pushStringAnnotation(tag = tnc, annotation = tnc)
                             append(tnc)
                         }
-                        append(" and ")
-                        withStyle(style = SpanStyle(color = Color.White),) {
-                            pushStringAnnotation(
-                                tag = privacyPolicy,
-                                annotation = privacyPolicy
-                            )
+                        withStyle(style = SpanStyle(color = prefixColor)) {
+                            append(" and ")
+                        }
+                        withStyle(style = SpanStyle(color = linkColor)) {
+                            pushStringAnnotation(tag = privacyPolicy, annotation = privacyPolicy)
                             append(privacyPolicy)
                         }
                     }
@@ -223,8 +250,8 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel) {
                     )
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
 
+                Spacer(modifier = Modifier.height(12.dp))
                 Button(
                     onClick = {
                         if (!isChecked.value) {
@@ -236,34 +263,33 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel) {
                         } else {
                             viewModel.viewModelScope.launch {
                                 viewModel.loginIntent.send(
-                                    LoginIntent.GenerateLoginOTP(
-                                        requestOTPJson
-                                    )
+                                    LoginIntent.GenerateLoginOTP(requestOTPJson)
                                 )
                             }
                         }
                     },
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth().padding(12.dp)
                         .height(50.dp),
                     enabled = isLoginEnabled,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White,
-                        contentColor = Color.White,
+                        containerColor = if (isSystemInDarkTheme()) Color.White else screenBackend,
+                        contentColor = if (isSystemInDarkTheme()) Color.Black else Color.White,
                         disabledContainerColor = Color(0x6066717C),
-                        disabledContentColor = Color.White
+                        disabledContentColor = Color.Gray
                     ),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.login),
                         style = MaterialTheme.typography.headlineMedium,
-                        color = Color(211, 145, 11, 255)
+                        color = if (isSystemInDarkTheme()) Color(211, 145, 11, 255) else Color.White
                     )
                 }
             }
         }
-    }
+        }
+
 }
 
 
@@ -283,24 +309,12 @@ private fun TopSection() {
             modifier = Modifier.padding(top = 80.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                modifier = Modifier
-                    .padding(start = 16.dp)
-                    .size(42.dp),
-                painter = painterResource(id = R.drawable.astrology),
-                contentDescription = "",
-                tint = uiColor
-            )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
                     text = stringResource(R.string.app_name),
+                    fontFamily = FontFamily(Font(R.font.cursive)),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = uiColor
-                )
-                Text(
-                    text = stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.titleMedium,
                     color = uiColor
                 )
             }

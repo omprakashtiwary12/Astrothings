@@ -71,6 +71,7 @@ import com.op.astrothings.R
 import com.op.astrothings.com.astrothings.model.dashboardResponseModel.Data
 import com.op.astrothings.com.astrothings.model.dashboardResponseModel.Reviews
 import com.op.astrothings.com.astrothings.util.Constants.Companion.IMG_BASE_URL
+import com.op.astrothings.ui.theme.screenBackend
 
 enum class MultiFloatingState {
     COLLAPSED,
@@ -91,49 +92,12 @@ private val starGold = Color(0xFFFFB300)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AstrologerProfile(
-    data: Data,
-    navController: NavController,
-    modifier: Modifier = Modifier
-) {
+fun AstrologerProfile(data: Data, navController: NavController, modifier: Modifier = Modifier) {
     val scrollState = rememberScrollState()
     var multiFloatingState by remember { mutableStateOf(MultiFloatingState.COLLAPSED) }
-    var showDialog by remember { mutableStateOf(false) }
-    var dialogMessage by remember { mutableStateOf("") }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val isScrolled = scrollBehavior.state.collapsedFraction > 0.5f
     val topBarTitle = if (isScrolled) data.name else data.name
-
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = {
-                Text(
-                    text = "Coming Soon!",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            text = {
-                Text(
-                    text = dialogMessage,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = { showDialog = false }) {
-                    Text(
-                        text = "OK",
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            },
-            containerColor = Color.White,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-            textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
 
     Scaffold(
         topBar = {
@@ -148,14 +112,15 @@ fun AstrologerProfile(
                             text = topBarTitle ?: "",
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Bold
-                            )
+                            ),
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = if (isScrolled) MaterialTheme.colorScheme.primary else Color(0xFFFFC107),
-                    titleContentColor = Color.Black,
-                    navigationIconContentColor = Color.Black
+                    titleContentColor = screenBackend,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground
                 ),
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
@@ -294,14 +259,14 @@ private fun StatItem(value: String, label: String) {
             fontFamily = FontFamily(Font(R.font.slabo)),
             fontWeight = FontWeight.Bold,
             fontSize = 22.sp,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onBackground
         )
         Text(
             text = label,
             fontFamily = FontFamily(Font(R.font.cursive)),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
@@ -334,7 +299,7 @@ private fun EnhancedProfileInfo(data: Data) {
                 fontFamily = FontFamily(Font(R.font.slabo)),
                 fontWeight = FontWeight.Bold,
                 fontSize = 22.sp,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             FlowRow(
@@ -347,7 +312,7 @@ private fun EnhancedProfileInfo(data: Data) {
                         Text(
                             text = specialization,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                            color = warmOrange,
+                            color = MaterialTheme.colorScheme.onBackground,
                             style = MaterialTheme.typography.bodyMedium,
                             fontSize = 20.sp,
                             fontFamily = FontFamily(Font(R.font.font_jiotype_medium_italic)),
@@ -380,16 +345,13 @@ private fun EnhancedProfileInfo(data: Data) {
 }
 
 @Composable
-private fun EnhancedReviewsSection(data: Data) {
-    Column(
-        modifier = Modifier.padding(16.dp)
-    ) {
+private fun EnhancedReviewsSection(data: Data) { Column(modifier = Modifier.padding(16.dp)) {
         Text(
             text = "Recent Reviews",
             fontFamily = FontFamily(Font(R.font.slabo)),
             fontWeight = FontWeight.Bold,
             fontSize = 22.sp,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -398,21 +360,10 @@ private fun EnhancedReviewsSection(data: Data) {
             ReviewCard(review)
             Spacer(modifier = Modifier.height(8.dp))
         }
-    }
-}
+    } }
 
 @Composable
-private fun ReviewCard(review: Reviews) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    ) {
+private fun ReviewCard(review: Reviews) { Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), shape = RoundedCornerShape(16.dp), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
         Column(
             modifier = Modifier.padding(20.dp)
         ) {
@@ -430,7 +381,7 @@ private fun ReviewCard(review: Reviews) {
                     fontFamily = FontFamily(Font(R.font.slabo)),
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(start = 12.dp)
                 )
             }
@@ -441,7 +392,7 @@ private fun ReviewCard(review: Reviews) {
                     fontFamily = FontFamily(Font(R.font.slabo)),
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(vertical = 12.dp)
                 )
             }
@@ -451,21 +402,17 @@ private fun ReviewCard(review: Reviews) {
                 fontWeight = FontWeight.SemiBold
             )
         }
-    }
-}
+    } }
 
 @Composable
-private fun InfoSection(
-    title: String,
-    content: String
-) {
+private fun InfoSection(title: String, content: String) {
     Column {
         Text(
             text = title,
             fontFamily = FontFamily(Font(R.font.slabo)),
             fontWeight = FontWeight.Bold,
             fontSize = 22.sp,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onBackground
         )
         Text(
             text = content,
@@ -473,18 +420,13 @@ private fun InfoSection(
             fontFamily = FontFamily(Font(R.font.font_jiotype_medium)),
             fontWeight = FontWeight.Light,
             fontSize = 13.sp,
-            color = Color.DarkGray
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
 
 @Composable
-private fun RatingBar(
-    rating: Float,
-    starColor: Color,
-    starSize: Dp,
-    modifier: Modifier = Modifier
-) {
+private fun RatingBar(rating: Float, starColor: Color, starSize: Dp, modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
         repeat(5) { index ->
             Icon(
@@ -496,11 +438,46 @@ private fun RatingBar(
         }
     }
 }
+
 @Composable
 fun FloatingActionButtonScreen(
     multiFloatingState: MultiFloatingState,
     onStateChange: (MultiFloatingState) -> Unit
 ) {
+    var dialogMessage by remember { mutableStateOf("Payment Feature is in progress. Coming soon...") }
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = {
+                Text(
+                    text = "Coming Soon!",
+                    color = Color.Black,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = dialogMessage,
+                    color = Color.Black,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text(
+                        text = "OK",
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            },
+            containerColor = Color.White,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -541,13 +518,13 @@ fun FloatingActionButtonScreen(
                 modifier = Modifier.padding(bottom = 64.dp)
             ) {
                 SmallFloatingActionButton(
-                    onClick = { /* Handle Option 1 */ },
+                    onClick = {showDialog = true},
                     containerColor = MaterialTheme.colorScheme.secondary
                 ) {
                     Icon(Icons.Default.Email, contentDescription = "Chat")
                 }
                 SmallFloatingActionButton(
-                    onClick = { /* Handle Option 2 */ },
+                    onClick = {showDialog = true },
                     containerColor = MaterialTheme.colorScheme.secondary
                 ) {
                     Icon(Icons.Default.Call, contentDescription = "Call")

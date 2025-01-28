@@ -35,13 +35,14 @@ fun OtpTextField(
     value: String,
     length: Int,
     onValueChange: (String) -> Unit,
-    onVerificationExplicitlyTriggered: () -> Unit
+    onVerificationExplicitlyTriggered: () -> Unit,
+    isPasswordVisible: Boolean = false // New parameter for password visibility
 ) {
     BasicTextField(
         value = TextFieldValue(value, selection = TextRange(value.length)),
         onValueChange = { if (it.text.length <= length) onValueChange(it.text) },
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
+            keyboardType = KeyboardType.NumberPassword, // Use NumberPassword for numeric passwords
             imeAction = ImeAction.Done
         ),
         keyboardActions = KeyboardActions(onDone = { onVerificationExplicitlyTriggered() }),
@@ -50,7 +51,8 @@ fun OtpTextField(
                 repeat(length) { index ->
                     CharView(
                         index = index,
-                        text = value
+                        text = value,
+                        isPasswordVisible = isPasswordVisible // Pass visibility flag to CharView
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
@@ -63,10 +65,12 @@ fun OtpTextField(
 private fun CharView(
     modifier: Modifier = Modifier,
     index: Int,
-    text: String
+    text: String,
+    isPasswordVisible: Boolean // New parameter for password visibility
 ) {
     val isFocused = index == text.length
     val char = text.getOrNull(index)?.toString().orEmpty()
+    val displayChar = if (isPasswordVisible || char.isEmpty()) char else "●" // Show "●" if hidden
 
     val borderColor by animateColorAsState(
         targetValue = if (isFocused) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
@@ -86,7 +90,7 @@ private fun CharView(
     ) {
         Text(
             modifier = Modifier.align(Alignment.Center),
-            text = char,
+            text = displayChar,
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
@@ -101,6 +105,7 @@ private fun OtpTextFieldPreview() {
         value = "1234",
         length = 4,
         onValueChange = {},
-        onVerificationExplicitlyTriggered = {}
+        onVerificationExplicitlyTriggered = {},
+        isPasswordVisible = false // Toggle this to true to show the characters
     )
 }
